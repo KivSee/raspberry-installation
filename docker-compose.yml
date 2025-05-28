@@ -27,9 +27,9 @@ services:
       - /home/pi/Music:/wav_files
     devices:
       - /dev/snd
-    depends_on: 
+    depends_on:
       - "mosquitto"
-                    
+
   timesyncserver:
     image: blumamir/time-sync-server
     restart: always
@@ -61,9 +61,9 @@ services:
       - "8081:80"
     volumes:
       - /home/pi/repos/led_object_repo:/led_object_repo
-    depends_on: 
+    depends_on:
       - "mosquitto"
-          
+
   ledtriggerservice:
     image: blumamir/led-trigger-service
     restart: always
@@ -80,10 +80,16 @@ services:
       OTEL_RUBY_EXPORTER_JAEGER_SSL_VERIFY_NONE: 1
     ports:
       - "8083:80"
-    depends_on: 
+    depends_on:
       - "ledsequenceservice"
       - "wavplayeralsa"
       - "mosquitto"
+
+  simulationservice:
+    image: blumamir/simulation-service:latest
+    restart: always
+    ports:
+      - "8084:8084"
 
   influxdb:
     image: influxdb:1.8
@@ -113,5 +119,5 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=kivsee12
 
 #volumes:
-#  influxdb: 
-#  grafana: 
+#  influxdb:
+#  grafana:
