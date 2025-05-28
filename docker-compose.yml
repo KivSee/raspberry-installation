@@ -27,9 +27,9 @@ services:
       - /home/pi/Music:/wav_files
     devices:
       - /dev/snd
-    depends_on: 
+    depends_on:
       - "mosquitto"
-                    
+
   timesyncserver:
     image: blumamir/time-sync-server
     restart: always
@@ -61,9 +61,9 @@ services:
       - "8081:80"
     volumes:
       - /home/pi/repos/led_object_repo:/led_object_repo
-    depends_on: 
+    depends_on:
       - "mosquitto"
-          
+
   ledtriggerservice:
     image: blumamir/led-trigger-service
     restart: always
@@ -80,38 +80,44 @@ services:
       OTEL_RUBY_EXPORTER_JAEGER_SSL_VERIFY_NONE: 1
     ports:
       - "8083:80"
-    depends_on: 
+    depends_on:
       - "ledsequenceservice"
       - "wavplayeralsa"
       - "mosquitto"
 
-  influxdb:
-    image: influxdb:1.8
-    restart: unless-stopped
+  simulationservice:
+    image: blumamir/simulation-service:v0.1.12
+    restart: always
     ports:
-      - "8086:8086"
-    volumes:
-      - ./influxdb:/var/lib/influxdb
-      - ./influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+      - "8084:80"
 
-  grafana:
-    image: grafana/grafana
-    user: "$UID:$GID"
-    restart: unless-stopped
-    links:
-      - influxdb
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./grafana:/var/lib/grafana
-      - ./grafana/datasources:/etc/grafana/provisioning/datasources/
-      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards/
-    depends_on:
-      - influxdb
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=kivsee12
+#  influxdb:
+#    image: influxdb:1.8
+#    restart: unless-stopped
+#    ports:
+#      - "8086:8086"
+#    volumes:
+#      - ./influxdb:/var/lib/influxdb
+#      - ./influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+#
+#  grafana:
+#    image: grafana/grafana
+#    user: "$UID:$GID"
+#    restart: unless-stopped
+#    links:
+#      - influxdb
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - ./grafana:/var/lib/grafana
+#      - ./grafana/datasources:/etc/grafana/provisioning/datasources/
+#      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards/
+#    depends_on:
+#      - influxdb
+#    environment:
+#      - GF_SECURITY_ADMIN_USER=admin
+#      - GF_SECURITY_ADMIN_PASSWORD=kivsee12
 
 #volumes:
-#  influxdb: 
-#  grafana: 
+#  influxdb:
+#  grafana:
