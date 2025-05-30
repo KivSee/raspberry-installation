@@ -86,7 +86,7 @@ services:
       - "mosquitto"
 
   simulationservice:
-    image: blumamir/simulation-service:v0.1.12
+    image: blumamir/simulation-service:latest
     restart: always
     ports:
       - "8084:80"
